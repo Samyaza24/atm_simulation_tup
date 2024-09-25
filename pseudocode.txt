@@ -1,0 +1,98 @@
+ATM PROJECT OUTLINE
+
+- Linked List 
+
+1. Registration Module (1 person)
+	- Fronda
+
+2. Transaction Module (2 person)
+	- Torion
+	- Jadaone
+
+3. GUI (1 person) either wxWidgets or Qt
+	- Inciong
+
+files:
+1. registration.cpp
+
+2. transaction.cpp 
+
+3. classes.h
+	- struct Account
+		- string accountNumber (5 numerical digits)
+		- string name (50 char)
+		- string pincode (6 numerical digits)
+		- string birthday (MM-DD-YYYY)
+		- string contactNumber (+63 ddd-ddd-dddd)
+		- double balance
+
+		- Account() : accountNumber("00000"), name("Default"), pincode("123456"), birthday("01-01-1900"), contactNumber("+63 000-000-0000"), balance(5000)
+	
+	- struct Node
+		- Account account
+		- Node *next
+		- Node(Account _account) : account(_account), next(nullptr) {}
+		
+	- class Bank
+		private:
+			Node *head
+			Account &currentAccount
+
+		public:
+			Bank() : head(nullptr) {}
+
+			methods:
+
+			- void add(Account account)
+				- adds account to head
+				- newNode->next = head
+				- head = newNode
+
+			- void register()
+				- prompt for all account details -> newAccount
+					- accountNumber will be set by developer
+					- name set by user, should be unique
+					- pincode set by user
+					- birthday set by user, should follow format
+					- contactNumber set by user, should follow format
+					- balance set by developer, initially 5000		
+				
+				- add(newAccount)
+
+			- void balanceInquiry()
+				- display currentAccount.balance
+			
+			- void withdraw()
+				- prompt for value to be withdrawn
+					- consider current balance, should not be <= 0
+				- currentAccount.balance -= value
+
+			- void deposit()
+				- prompt for value to be deposited
+					- consider current balance, should not exceed 1,000,000,000,000
+				- currentAccount.balance += value
+
+			- void fundTransfer()
+				- receiverAccount = prompt account where you want to transfer your funds
+					- checks if account exists in the list, if does not exist -> return
+				- prompt for value 
+					- consider current balance, currentAccount.balance should not be <= 0
+				- currentAccount.balance -= value
+				- receiverAccount.balance += value
+			
+			- void changePincode()
+				- prompt for new pincode
+					- should be valid, no letters, punctuation and shit
+				- currentAccount.pincode = newPincode
+
+
+- main.cpp
+
+
+Flash Drive 
+	- account.txt
+
+
+Plus Points:
+1. Git and GitHub
+2. 

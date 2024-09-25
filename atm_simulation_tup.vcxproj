@@ -132,6 +132,13 @@
   <ItemGroup>
     <ClInclude Include="classes.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="allAccounts.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="pseudocode.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

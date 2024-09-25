@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 
+#include "classes.h"
+
 using namespace std;
 
 bool isFlashDriveInserted(char driveLetter) 
@@ -32,27 +34,33 @@ int main() {
         Sleep(2000);
     }
 
-    string filepath = string(1, driveLetter) + ":\\account.txt";
+    // TESTING by FORD
+    cout << "This is Testing by Ford" << endl;
+    system("pause");
 
-    ifstream inputFile(filepath);
-    if (!inputFile)
-    {
-        ofstream outputFile(filepath);
-        cout << "Register an account\n";
-        string name;
+    
 
-        cout << "Enter name: ";
-        getline(cin, name);
-        outputFile << name << endl;
-        outputFile.close();
-    }
-    else
-    {
-        string name;
-        getline(inputFile, name);
-        cout << "Welcome " << name << endl
-            << "Enter Pin Code\n";
-    }
+    cout << "Declared 3 accounts and used add method. The following accounts were added to the Linked List" << endl;
+    C::Account adminAccount("00001", "Ford Torion", "123456", "09-28-2004", "+63 909-090-9090", 5000);
+    C::Account account1;
+    C::Account account2("00003", "Clifford Roy", "111111", "09-09-0909", "+63 909-090-9090", 5000);
+    C::Bank TUPBank(adminAccount);
+
+    TUPBank.retrieveAllAccounts();
+
+    /*TUPBank.add(adminAccount);
+    TUPBank.add(account1);
+    TUPBank.add(account2);*/
+
+    TUPBank.displayAllAccounts();
+
+    system("pause");
+    system("cls");
+
+    cout << "Saving to allAccounts.csv" << endl;
+
+    TUPBank.save_all_accounts();
+
 
     return 0;
 }

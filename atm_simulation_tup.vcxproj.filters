@@ -24,4 +24,11 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="allAccounts.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="pseudocode.txt" />
+  </ItemGroup>
 </Project>
