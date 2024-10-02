@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -30,7 +31,7 @@ class Bank
 {
 private:
 	Node* head;
-	Account& currentAccount;
+	
 	int accNumberCounter;
 
 	string filename = "allAccounts.csv";
@@ -39,7 +40,9 @@ private:
 	bool isEmpty();
 
 public:
-	Bank(Account admin) : head(nullptr), currentAccount(admin), accNumberCounter(0) {}
+	Account& currentAccount;
+
+	Bank(Account& admin) : head(nullptr), currentAccount(admin), accNumberCounter(0) {}
 
 	bool isCardRegistered();
 	
@@ -47,6 +50,5 @@ public:
 	void saveAllAccounts();
 
 	void add(Account account);
-
 };
 

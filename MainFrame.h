@@ -25,6 +25,8 @@ private:
 	void ShowRegistrationControls(bool show);
 	void ShowTransactionControls(bool show);
 
+	void OnBalanceInquiryButtonClicked(wxCommandEvent& evt);
+
 	wxPanel* panel;
 	wxTimer* timer;
 
@@ -49,6 +51,9 @@ private:
 	wxButton* changePinButton; 
 
 	wxStatusBar* statusBar;
+
+	// Balance Inquiry
+	wxStaticText* balanceText;
 	
 };
 

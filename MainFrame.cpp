@@ -4,14 +4,18 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
 MainFrame::MainFrame(const wxString& title) 
     : wxFrame(nullptr, wxID_ANY, title), 
-    adminAccount("00000", "admin", "123456", "09-28-2004", "+63 909-320-5093", 1000000),
-    bank(adminAccount)
-{
+    adminAccount("00000", "admin", "123456", "09-28-2004", "+63 909-320-5093", 1000000.0),
+    bank(adminAccount) 
+{ 
+    wxMessageBox(wxString::Format("Admin Balance: %f", adminAccount.balance), "Balance Inquiry", wxOK | wxICON_INFORMATION);
+    wxMessageBox(wxString::Format("Current Account Balance: %f", bank.currentAccount.balance), "Balance Inquiry", wxOK | wxICON_INFORMATION);
+
     CreateControls();
     SetupSizers();
     BindEventHandlers();
@@ -55,6 +59,9 @@ void MainFrame::CreateControls()
     fundTransferButton = new wxButton(panel, wxID_ANY, "Fund Transfer");
     changePinButton = new wxButton(panel, wxID_ANY, "Change PIN Code");
 
+    // Balance Inquiry Controls
+    balanceText = new wxStaticText(panel, wxID_ANY, "Current Balance: -1");
+
     ShowInsertCardText(true);
     ShowEnterPincode(false);
     ShowRegistrationControls(false);
@@ -95,6 +102,9 @@ void MainFrame::SetupSizers()
     mainSizer->Add(fundTransferButton, wxSizerFlags().Expand());
     mainSizer->Add(changePinButton, wxSizerFlags().Expand());
 
+    // Add Balance Inquiry Controls to Sizer
+    mainSizer->Add(balanceText, wxSizerFlags().CenterHorizontal());
+
     // Outer Sizer for Border 
     wxGridSizer* outerSizer = new wxGridSizer(1);
     outerSizer->Add(mainSizer, wxSizerFlags(1).Border(wxALL, 25).Expand());
@@ -106,6 +116,7 @@ void MainFrame::SetupSizers()
 void MainFrame::BindEventHandlers()
 {
     this->Bind(wxEVT_TIMER, &MainFrame::OnTimer, this);
+    balanceInquiryButton->Bind(wxEVT_BUTTON, &MainFrame::OnBalanceInquiryButtonClicked, this);
 }
 
 void MainFrame::OnTimer(wxTimerEvent& evt)
@@ -114,6 +125,7 @@ void MainFrame::OnTimer(wxTimerEvent& evt)
     {
         OnFlashDriveInserted();
     }
+
     else
     {
         ShowInsertCardText(true);
@@ -128,10 +140,10 @@ void MainFrame::OnFlashDriveInserted()
 {
     if (bank.isCardRegistered())
     {
-        ShowEnterPincode(true);
+        ShowEnterPincode(false);
         ShowInsertCardText(false);
         ShowRegistrationControls(false);
-        ShowTransactionControls(false);
+        ShowTransactionControls(true);
     }
     else
     {
@@ -184,3 +196,15 @@ void MainFrame::ShowTransactionControls(bool show)
     fundTransferButton->Show(show);
     changePinButton->Show(show);
 }
+
+void MainFrame::OnBalanceInquiryButtonClicked(wxCommandEvent& evt)
+{
+    ShowTransactionControls(false);
+    int balance = bank.currentAccount.balance;
+ 
+    balanceText->SetLabel(wxString::Format("Current Balance: %d", balance));
+
+    balanceText->Show(true);
+    panel->Layout();
+}
+
