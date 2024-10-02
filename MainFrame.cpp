@@ -13,8 +13,8 @@ MainFrame::MainFrame(const wxString& title)
     adminAccount("00000", "admin", "123456", "09-28-2004", "+63 909-320-5093", 1000000.0),
     bank(adminAccount) 
 { 
-    wxMessageBox(wxString::Format("Admin Balance: %f", adminAccount.balance), "Balance Inquiry", wxOK | wxICON_INFORMATION);
-    wxMessageBox(wxString::Format("Current Account Balance: %f", bank.currentAccount.balance), "Balance Inquiry", wxOK | wxICON_INFORMATION);
+    /*wxMessageBox(wxString::Format("Admin Balance: %f", adminAccount.balance), "Balance Inquiry", wxOK | wxICON_INFORMATION);
+    wxMessageBox(wxString::Format("Current Account Balance: %f", bank.currentAccount.balance), "Balance Inquiry", wxOK | wxICON_INFORMATION);*/
 
     CreateControls();
     SetupSizers();
