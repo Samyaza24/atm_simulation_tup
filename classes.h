@@ -48,5 +48,10 @@ public:
 
 	void add(Account account);
 
+	void balanceInquiry();
+	void withdraw();
+	void deposit();
+	void fundTransfer();
+	void changePincode();
 };
 
