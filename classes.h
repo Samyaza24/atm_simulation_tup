@@ -35,7 +35,7 @@ private:
 	int accNumberCounter;
 
 	string filename = "allAccounts.csv";
-	char driveLetter = 'D';
+	char driveLetter = 'C';
 
 	bool isEmpty();
 
@@ -50,5 +50,8 @@ public:
 	void saveAllAccounts();
 
 	void add(Account account);
+	
+	bool withraw(int amount);
+	bool deposit(int amount);
 };
 

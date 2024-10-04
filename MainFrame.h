@@ -24,8 +24,20 @@ private:
 	void ShowEnterPincode(bool show);
 	void ShowRegistrationControls(bool show);
 	void ShowTransactionControls(bool show);
+	void ShowBalanceInquiryControls(bool show);
+	void ShowWithrawTransactionControls(bool show);
+	void ShowDepositTransactionControls(bool show);
+
 
 	void OnBalanceInquiryButtonClicked(wxCommandEvent& evt);
+	void OnConfirmBalanceInquiryButtonClicked(wxCommandEvent& evt);
+
+	void OnWithrawButtonClicked(wxCommandEvent& evt);
+	void OnConfirmWithrawButtonClicked(wxCommandEvent& evt);
+
+	void OnDepositButtonClicked(wxCommandEvent& evt);
+	void OnConfirmDepositButtonClicked(wxCommandEvent& evt);
+
 
 	wxPanel* panel;
 	wxTimer* timer;
@@ -53,7 +65,21 @@ private:
 	wxStatusBar* statusBar;
 
 	// Balance Inquiry
-	wxStaticText* balanceText;
+
+
+
+	wxStaticText* BalanceText;
+	wxStaticText* WithrawText;
+	wxStaticText* DepositText;
+
+	wxTextCtrl* WithrawInputField;
+	wxTextCtrl* DepositInputField;
+
+
+	wxButton* ConfirmBalanceInquiryButton;
+	wxButton* ConfirmWithrawButton;
+	wxButton* ConfirmDepositButton;
+
 	
 };
 
