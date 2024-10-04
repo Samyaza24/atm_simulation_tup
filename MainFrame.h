@@ -27,6 +27,7 @@ private:
 	void ShowBalanceInquiryControls(bool show);
 	void ShowWithrawTransactionControls(bool show);
 	void ShowDepositTransactionControls(bool show);
+	void ShowFundTransferTransactionControls(bool show);
 
 
 	void OnBalanceInquiryButtonClicked(wxCommandEvent& evt);
@@ -38,6 +39,8 @@ private:
 	void OnDepositButtonClicked(wxCommandEvent& evt);
 	void OnConfirmDepositButtonClicked(wxCommandEvent& evt);
 
+	void OnFundTransferButtonClicked(wxCommandEvent& evt);
+	void OnConfirmFundTransferClicked(wxCommandEvent& evt);
 
 	wxPanel* panel;
 	wxTimer* timer;
@@ -71,6 +74,7 @@ private:
 	wxStaticText* BalanceText;
 	wxStaticText* WithrawText;
 	wxStaticText* DepositText;
+	
 
 	wxTextCtrl* WithrawInputField;
 	wxTextCtrl* DepositInputField;
@@ -81,5 +85,11 @@ private:
 	wxButton* ConfirmDepositButton;
 
 	
+	wxStaticText* FundTransterText;
+	wxTextCtrl* receiverAccountInputField;
+	wxTextCtrl* fundTransferAmountInputField;
+	wxButton* fundTransferButtonClicked;			/////////
+	wxButton* ConfirmFundTransferButton;
+
 };
 

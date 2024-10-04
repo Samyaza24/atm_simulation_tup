@@ -31,3 +31,27 @@ bool Bank::deposit(int amount) {
 	}
 }
 
+bool Bank::fundTransfer(const string& receiverAccountNumber, int amount)
+{
+	// If valid amount
+	if (amount <= 0 || currentAccount.balance <= 0 || amount > currentAccount.balance) {
+		return false; 
+	}
+
+	// Find the receiver account in the list
+	Node* current = head;
+	while (current != nullptr) {
+		if (current->account.accountNumber == receiverAccountNumber) {
+			// Transfer funds
+			currentAccount.balance -= amount; // Deduct from current account
+			current->account.balance += amount; // Add to receiver's account
+			return true; // Transfer successful
+		}
+		current = current->next;
+	}
+
+	return false; // Receiver account not found
+}
+
+
+

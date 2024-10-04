@@ -53,5 +53,6 @@ public:
 	
 	bool withraw(int amount);
 	bool deposit(int amount);
+	bool fundTransfer(const string& receiverAccountNumber, int amount);
 };
 
