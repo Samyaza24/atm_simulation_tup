@@ -28,6 +28,7 @@ private:
 	void ShowWithrawTransactionControls(bool show);
 	void ShowDepositTransactionControls(bool show);
 	void ShowFundTransferTransactionControls(bool show);
+	void ShowChangePincodeTransactionControls(bool show);
 
 
 	void OnBalanceInquiryButtonClicked(wxCommandEvent& evt);
@@ -40,7 +41,10 @@ private:
 	void OnConfirmDepositButtonClicked(wxCommandEvent& evt);
 
 	void OnFundTransferButtonClicked(wxCommandEvent& evt);
-	void OnConfirmFundTransferClicked(wxCommandEvent& evt);
+	void OnConfirmFundTransferButtonClicked(wxCommandEvent& evt);
+	
+	void OnChangePincodeButtonClicked(wxCommandEvent& evt);
+	void OnConfirmChangePincodeButonClicked(wxCommandEvent& evt);
 
 	wxPanel* panel;
 	wxTimer* timer;
@@ -89,6 +93,12 @@ private:
 	wxTextCtrl* receiverAccountInputField;
 	wxTextCtrl* fundTransferAmountInputField;
 	wxButton* ConfirmFundTransferButton;
+	
+
+	wxStaticText* ChangePincodeText;
+	wxTextCtrl* oldPincodeInputField;
+	wxTextCtrl* newPincodeInputField;
+	wxButton* ConfirmChangePincodeButton;
 
 };
 

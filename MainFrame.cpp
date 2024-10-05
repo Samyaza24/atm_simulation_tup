@@ -81,12 +81,20 @@ void MainFrame::CreateControls()
     DepositInputField = new wxTextCtrl(panel, wxID_ANY, "Amount", wxDefaultPosition, wxDefaultSize);
     ConfirmDepositButton = new wxButton(panel, wxID_ANY, "Confirm");
 
-    //  FUND TRANSFER
+    //  FUND TRANSFER CONTROLS
     FundTransterText = new wxStaticText(panel, wxID_ANY, "Fund Transfer", wxPoint(0, 22), wxSize(800, -1), wxALIGN_CENTER_HORIZONTAL);
     FundTransterText->SetFont(headlineFont);
     receiverAccountInputField = new wxTextCtrl(panel, wxID_ANY, "Recipient Account Number", wxDefaultPosition, wxDefaultSize);
     fundTransferAmountInputField = new wxTextCtrl(panel, wxID_ANY, "Amount", wxDefaultPosition, wxDefaultSize);
     ConfirmFundTransferButton = new wxButton(panel, wxID_ANY, "Confirm Transfer");
+
+    //  CHANGE PIN CODE CONTROLS
+    ChangePincodeText = new wxStaticText(panel, wxID_ANY, "Change PinCode", wxPoint(0, 22), wxSize(800, -1), wxALIGN_CENTER_HORIZONTAL);
+    ChangePincodeText->SetFont(headlineFont);
+    oldPincodeInputField = new wxTextCtrl(panel, wxID_ANY, "Old PinCode", wxDefaultPosition, wxDefaultSize);
+    newPincodeInputField = new wxTextCtrl(panel, wxID_ANY, "New PinCode", wxDefaultPosition, wxDefaultSize);
+    ConfirmChangePincodeButton = new wxButton(panel, wxID_ANY, "Confirm Changes");
+
 
 
     ShowInsertCardText(true);
@@ -97,6 +105,7 @@ void MainFrame::CreateControls()
     ShowWithrawTransactionControls(false);
     ShowDepositTransactionControls(false);
     ShowFundTransferTransactionControls(false);
+    ShowChangePincodeTransactionControls(false);
     
 
     statusBar = CreateStatusBar();
@@ -151,6 +160,12 @@ void MainFrame::SetupSizers()
     mainSizer->Add(fundTransferAmountInputField, wxSizerFlags().Expand());
     mainSizer->Add(ConfirmFundTransferButton, wxSizerFlags().Expand().Border(wxALL, 10));
 
+    mainSizer->Add(ChangePincodeText, wxSizerFlags().CenterHorizontal());
+    mainSizer->Add(oldPincodeInputField, wxSizerFlags().CenterHorizontal());
+    mainSizer->Add(newPincodeInputField, wxSizerFlags().CenterHorizontal());
+    mainSizer->Add(ConfirmChangePincodeButton, wxSizerFlags().CenterHorizontal());
+
+
     // Outer Sizer for Border 
     wxGridSizer* outerSizer = new wxGridSizer(1);
     outerSizer->Add(mainSizer, wxSizerFlags(1).Border(wxALL, 25).Expand());
@@ -167,13 +182,13 @@ void MainFrame::BindEventHandlers()
     withdrawButton->Bind(wxEVT_BUTTON, &MainFrame::OnWithrawButtonClicked, this);
     depositButton->Bind(wxEVT_BUTTON, &MainFrame::OnDepositButtonClicked, this);
     fundTransferButton->Bind(wxEVT_BUTTON, &MainFrame::OnFundTransferButtonClicked, this);
-
-
+    changePinButton->Bind(wxEVT_BUTTON, &MainFrame::OnChangePincodeButtonClicked, this);
 
     ConfirmBalanceInquiryButton->Bind(wxEVT_BUTTON, &MainFrame::OnConfirmBalanceInquiryButtonClicked, this);
     ConfirmWithrawButton->Bind(wxEVT_BUTTON, &MainFrame::OnConfirmWithrawButtonClicked, this);
     ConfirmDepositButton->Bind(wxEVT_BUTTON, &MainFrame::OnConfirmDepositButtonClicked, this);
-    ConfirmFundTransferButton->Bind(wxEVT_BUTTON, &MainFrame::OnConfirmFundTransferClicked, this);
+    ConfirmFundTransferButton->Bind(wxEVT_BUTTON, &MainFrame::OnConfirmFundTransferButtonClicked, this);
+    ConfirmChangePincodeButton->Bind(wxEVT_BUTTON, &MainFrame::OnConfirmChangePincodeButonClicked, this);
 }
 
 void MainFrame::OnTimer(wxTimerEvent& evt)
@@ -263,6 +278,7 @@ void MainFrame::ShowTransactionControls(bool show)
     ShowBalanceInquiryControls(false);
     ShowWithrawTransactionControls(false);
     ShowFundTransferTransactionControls(false);
+    ShowChangePincodeTransactionControls(false);
 
     if (show) {
         panel->Layout();
@@ -297,6 +313,14 @@ void MainFrame::ShowFundTransferTransactionControls(bool show)
     ConfirmFundTransferButton->Show(show);
 }
 
+void MainFrame::ShowChangePincodeTransactionControls(bool show)
+{
+    ChangePincodeText->Show(show);
+    oldPincodeInputField->Show(show);
+    newPincodeInputField->Show(show);
+    ConfirmChangePincodeButton->Show(show);
+}
+
 void MainFrame::OnBalanceInquiryButtonClicked(wxCommandEvent& evt)
 {
     ShowTransactionControls(false);
@@ -324,22 +348,22 @@ void MainFrame::OnWithrawButtonClicked(wxCommandEvent& evt) {
 
 void MainFrame::OnConfirmWithrawButtonClicked(wxCommandEvent& evt) {
 
-    long amount = 0;
+    string amountStr = string(WithrawInputField->GetValue().mb_str());
 
-    if (WithrawInputField->GetValue().ToLong(&amount) && amount > 0) {
-        bool result = bank.withraw(static_cast<int>(amount));
-
-        if (result) {
-            wxMessageBox(wxString::Format("You Withrew %ld", amount), "Transaction Successful", wxOK | wxICON_INFORMATION);
-        }
-        else {
-            wxMessageBox("Failed Transaction");
-        }
+    try {
+        double amount = stod(amountStr);
+        bank.withraw(amount);
+        wxMessageBox("Successful Transaction", "Success", wxOK | wxICON_INFORMATION);
     }
-    else {
-        wxMessageBox("Invalid amount", "ERROR", wxOK | wxICON_ERROR);
+    catch(const invalid_argument& i){
+        wxMessageBox(i.what(), "Error", wxOK | wxICON_ERROR);
     }
-
+    catch (const out_of_range&) {
+        wxMessageBox("Amount out of range", "Error", wxOK | wxICON_ERROR);
+    }
+    catch (const exception& e) {
+        wxMessageBox(e.what(), "Error", wxOK | wxICON_ERROR);
+    }
     WithrawInputField->Clear();
     ShowTransactionControls(true);
 
@@ -355,19 +379,20 @@ void MainFrame::OnDepositButtonClicked(wxCommandEvent& evt)
 void MainFrame::OnConfirmDepositButtonClicked(wxCommandEvent& evt)
 {
     ShowDepositTransactionControls(false);
-    long amount = 0;
-    if (DepositInputField->GetValue().ToLong(&amount) && amount > 0) {
-        bool result = bank.deposit(static_cast<int>(amount));
 
-        if (result) {
-            wxMessageBox(wxString::Format("Deposited %ld", amount), "Transaction Successful", wxOK | wxICON_INFORMATION);
-        }
-        else {
-            wxMessageBox(wxString::Format("Failed Transaction"), "ERROR", wxOK | wxICON_ERROR);
-        }
+    string amountStr = string(DepositInputField->GetValue().mbc_str());
+
+    try {
+        double amount = stod(amountStr);
+        bank.deposit(amount);
+
+        wxMessageBox("Successful Transaction", "Success", wxICON_INFORMATION);
     }
-    else {
-        wxMessageBox("Invalid Amount. Please enter a positive number.", "ERROR", wxOK | wxICON_ERROR);
+    catch (const invalid_argument& i) {
+        wxMessageBox(i.what(), "Error", wxOK | wxICON_ERROR);
+    }
+    catch (const exception& e) {
+        wxMessageBox(e.what(), "Error", wxOK | wxICON_ERROR);
     }
     DepositInputField->Clear();
     ShowTransactionControls(true);
@@ -380,24 +405,50 @@ void MainFrame::OnFundTransferButtonClicked(wxCommandEvent& evt)
     panel->Layout();
 }
 
-void MainFrame::OnConfirmFundTransferClicked(wxCommandEvent& evt)
+void MainFrame::OnConfirmFundTransferButtonClicked(wxCommandEvent& evt)
 {
-    long amount = 0;
-    string receiverAccountNumber = std::string(receiverAccountInputField->GetValue().mb_str());
-
-    if (fundTransferAmountInputField->GetValue().ToLong(&amount) && amount > 0) {
-        bool result = bank.fundTransfer(receiverAccountNumber, static_cast<int>(amount));
-
-        if (result) {
-            wxMessageBox(wxString::Format("Successfully transferred %ld to %s", amount, receiverAccountNumber), "Transaction Successful", wxOK | wxICON_INFORMATION);
-        }
-        else {
-            wxMessageBox("Failed to transfer funds. Please check the recipient account number and ensure you have sufficient balance.", "ERROR", wxOK | wxICON_ERROR);
-        }
+    string amountStr = string(fundTransferAmountInputField->GetValue().mbc_str());
+    string receiverAccountNumber = string(receiverAccountInputField->GetValue().mb_str());
+    
+    try
+    {
+        double amount = stod(amountStr);
+        bank.fundTransfer(receiverAccountNumber, amount);
+        
+        wxMessageBox(wxString::Format("Successfully Transaction", "Successful", wxOK | wxICON_INFORMATION));
     }
-    else {
-        wxMessageBox("Invalid amount. Please enter a positive number.", "ERROR", wxOK | wxICON_ERROR);
+    catch (const invalid_argument& i) {
+        wxMessageBox(i.what(), "Error", wxOK | wxICON_ERROR);
     }
+    catch (const out_of_range&) {
+        wxMessageBox("Amount out of range", "Error", wxOK | wxICON_ERROR);
+    }
+    catch (const exception& e) {
+        wxMessageBox(e.what(), "Error", wxOK | wxICON_ERROR);
+    }
+    ShowTransactionControls(true);
+}
 
+void MainFrame::OnChangePincodeButtonClicked(wxCommandEvent& evt)
+{
+    ShowTransactionControls(false);
+    ShowChangePincodeTransactionControls(true);
+    panel->Layout();
+}
+
+void MainFrame::OnConfirmChangePincodeButonClicked(wxCommandEvent& evt)
+{
+    string oldPin = string(oldPincodeInputField->GetValue().mb_str());
+    string newPin = string(newPincodeInputField->GetValue().mb_str());
+
+    try {
+        bank.changePincode(oldPin, newPin);
+        wxMessageBox("Successfully Changed PIN", "Success", wxOK | wxICON_INFORMATION);
+    }
+    catch (const invalid_argument& i) {
+        wxMessageBox(i.what(), "Error", wxOK | wxICON_ERROR);
+    }
+    oldPincodeInputField->Clear();
+    newPincodeInputField->Clear();
     ShowTransactionControls(true);
 }

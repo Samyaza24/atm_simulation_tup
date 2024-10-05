@@ -51,8 +51,10 @@ public:
 
 	void add(Account account);
 	
-	bool withraw(int amount);
-	bool deposit(int amount);
-	bool fundTransfer(const string& receiverAccountNumber, int amount);
+	bool withraw(double amount);
+	bool deposit(double amount);
+	bool fundTransfer(const string& receiverAccountNumber, double amount);
+	bool changePincode(const string& oldP, const string& newP);
+	bool isNumber(const string& str);
 };
 
