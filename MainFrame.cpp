@@ -72,13 +72,13 @@ void MainFrame::CreateControls()
     //withraw Controls
     WithrawText = new wxStaticText(panel, wxID_ANY, "Withraw Transaction", wxPoint(0, 22), wxSize(800, -1), wxALIGN_CENTER_HORIZONTAL);
     WithrawText->SetFont(headlineFont);
-    WithrawInputField = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize);
+    WithrawInputField = new wxTextCtrl(panel, wxID_ANY, "Amount", wxDefaultPosition, wxDefaultSize);
     ConfirmWithrawButton = new wxButton(panel, wxID_ANY, "Confirm");
 
     //  DEPOSIT CONTROLS
     DepositText = new wxStaticText(panel, wxID_ANY, "Deposit Transaction", wxPoint(0, 22), wxSize(800, -1), wxALIGN_CENTER_HORIZONTAL);
     DepositText->SetFont(headlineFont);
-    DepositInputField = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize);
+    DepositInputField = new wxTextCtrl(panel, wxID_ANY, "Amount", wxDefaultPosition, wxDefaultSize);
     ConfirmDepositButton = new wxButton(panel, wxID_ANY, "Confirm");
 
     //  FUND TRANSFER
@@ -86,7 +86,6 @@ void MainFrame::CreateControls()
     FundTransterText->SetFont(headlineFont);
     receiverAccountInputField = new wxTextCtrl(panel, wxID_ANY, "Recipient Account Number", wxDefaultPosition, wxDefaultSize);
     fundTransferAmountInputField = new wxTextCtrl(panel, wxID_ANY, "Amount", wxDefaultPosition, wxDefaultSize);
-    fundTransferButtonClicked = new wxButton(panel, wxID_ANY, "Fund Transfer");
     ConfirmFundTransferButton = new wxButton(panel, wxID_ANY, "Confirm Transfer");
 
 
@@ -150,8 +149,7 @@ void MainFrame::SetupSizers()
     mainSizer->Add(FundTransterText, wxSizerFlags().CenterHorizontal());
     mainSizer->Add(receiverAccountInputField, wxSizerFlags().Expand());
     mainSizer->Add(fundTransferAmountInputField, wxSizerFlags().Expand());
-    mainSizer->Add(fundTransferButtonClicked, wxSizerFlags().Expand());
-    mainSizer->Add(ConfirmFundTransferButton, wxSizerFlags().Expand());
+    mainSizer->Add(ConfirmFundTransferButton, wxSizerFlags().Expand().Border(wxALL, 10));
 
     // Outer Sizer for Border 
     wxGridSizer* outerSizer = new wxGridSizer(1);
@@ -168,8 +166,8 @@ void MainFrame::BindEventHandlers()
     balanceInquiryButton->Bind(wxEVT_BUTTON, &MainFrame::OnBalanceInquiryButtonClicked, this);
     withdrawButton->Bind(wxEVT_BUTTON, &MainFrame::OnWithrawButtonClicked, this);
     depositButton->Bind(wxEVT_BUTTON, &MainFrame::OnDepositButtonClicked, this);
-    FundTransterText->Bind(wxEVT_BUTTON, &MainFrame::OnDepositButtonClicked, this);
-    fundTransferButtonClicked->Bind(wxEVT_BUTTON, &MainFrame::OnFundTransferButtonClicked, this);
+    fundTransferButton->Bind(wxEVT_BUTTON, &MainFrame::OnFundTransferButtonClicked, this);
+
 
 
     ConfirmBalanceInquiryButton->Bind(wxEVT_BUTTON, &MainFrame::OnConfirmBalanceInquiryButtonClicked, this);
@@ -266,8 +264,6 @@ void MainFrame::ShowTransactionControls(bool show)
     ShowWithrawTransactionControls(false);
     ShowFundTransferTransactionControls(false);
 
-
-
     if (show) {
         panel->Layout();
     }
@@ -299,7 +295,6 @@ void MainFrame::ShowFundTransferTransactionControls(bool show)
     receiverAccountInputField->Show(show);
     fundTransferAmountInputField->Show(show);
     ConfirmFundTransferButton->Show(show);
-    fundTransferButton->Show(show);
 }
 
 void MainFrame::OnBalanceInquiryButtonClicked(wxCommandEvent& evt)
@@ -382,7 +377,6 @@ void MainFrame::OnFundTransferButtonClicked(wxCommandEvent& evt)
 {
     ShowTransactionControls(false);
     ShowFundTransferTransactionControls(true);
-
     panel->Layout();
 }
 
@@ -405,7 +399,5 @@ void MainFrame::OnConfirmFundTransferClicked(wxCommandEvent& evt)
         wxMessageBox("Invalid amount. Please enter a positive number.", "ERROR", wxOK | wxICON_ERROR);
     }
 
-    fundTransferAmountInputField->Clear();
-    receiverAccountInputField->Clear();
     ShowTransactionControls(true);
 }

@@ -88,7 +88,6 @@ private:
 	wxStaticText* FundTransterText;
 	wxTextCtrl* receiverAccountInputField;
 	wxTextCtrl* fundTransferAmountInputField;
-	wxButton* fundTransferButtonClicked;			/////////
 	wxButton* ConfirmFundTransferButton;
 
 };
