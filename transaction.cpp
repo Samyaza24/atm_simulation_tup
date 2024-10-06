@@ -2,8 +2,6 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include <stdexcept>
-
 using namespace std;
 
 bool Bank::withraw(double amount) {
@@ -56,17 +54,20 @@ bool Bank::fundTransfer(const string& receiverAccountNumber, double amount)
 
 bool Bank::changePincode(const string& oldP, const string& newP)
 {
-	if (oldP != currentAccount.pincode && oldP.empty() || newP.empty()) {
-		throw invalid_argument("PIN cannot be empty");
+	if (oldP.empty() || newP.empty()) {
+		throw exception("Input Empty");
 	}
 	if (currentAccount.pincode != oldP) {
 		throw invalid_argument("Incorrect Old PIN");
 	}
 	if (newP.length() != 6 || !isNumber(newP)) {
-		throw invalid_argument("The PIN must be 6-Digits long and a number");
+		throw out_of_range("The PIN must be 6-Digits long and a number");
 	}
 	currentAccount.pincode = newP;
+	
 	return true;
+
+
 }
 
 bool Bank::isNumber(const string& str) {

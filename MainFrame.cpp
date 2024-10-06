@@ -349,7 +349,9 @@ void MainFrame::OnWithrawButtonClicked(wxCommandEvent& evt) {
 void MainFrame::OnConfirmWithrawButtonClicked(wxCommandEvent& evt) {
 
     string amountStr = string(WithrawInputField->GetValue().mb_str());
-
+    if (amountStr.empty()) {
+        wxMessageBox("Input Empty", "Error", wxOK | wxICON_INFORMATION);
+    }
     try {
         double amount = stod(amountStr);
         bank.withraw(amount);
@@ -358,13 +360,14 @@ void MainFrame::OnConfirmWithrawButtonClicked(wxCommandEvent& evt) {
     catch(const invalid_argument& i){
         wxMessageBox(i.what(), "Error", wxOK | wxICON_ERROR);
     }
-    catch (const out_of_range&) {
-        wxMessageBox("Amount out of range", "Error", wxOK | wxICON_ERROR);
+    catch (const out_of_range& r) {
+        wxMessageBox(r.what(), "Error", wxOK | wxICON_ERROR);
     }
     catch (const exception& e) {
         wxMessageBox(e.what(), "Error", wxOK | wxICON_ERROR);
     }
     WithrawInputField->Clear();
+    ShowWithrawTransactionControls(false);
     ShowTransactionControls(true);
 
 }
@@ -378,10 +381,11 @@ void MainFrame::OnDepositButtonClicked(wxCommandEvent& evt)
 
 void MainFrame::OnConfirmDepositButtonClicked(wxCommandEvent& evt)
 {
-    ShowDepositTransactionControls(false);
 
     string amountStr = string(DepositInputField->GetValue().mbc_str());
-
+    if (amountStr.empty()) {
+        wxMessageBox("Input Empty", "Error", wxOK | wxICON_INFORMATION);
+    }
     try {
         double amount = stod(amountStr);
         bank.deposit(amount);
@@ -395,6 +399,7 @@ void MainFrame::OnConfirmDepositButtonClicked(wxCommandEvent& evt)
         wxMessageBox(e.what(), "Error", wxOK | wxICON_ERROR);
     }
     DepositInputField->Clear();
+    ShowDepositTransactionControls(false);
     ShowTransactionControls(true);
 }
 
@@ -410,6 +415,10 @@ void MainFrame::OnConfirmFundTransferButtonClicked(wxCommandEvent& evt)
     string amountStr = string(fundTransferAmountInputField->GetValue().mbc_str());
     string receiverAccountNumber = string(receiverAccountInputField->GetValue().mb_str());
     
+    if (amountStr.empty() || receiverAccountNumber.empty()) {
+        wxMessageBox("Input Empty", "Error", wxOK | wxICON_INFORMATION);
+    }
+
     try
     {
         double amount = stod(amountStr);
@@ -420,12 +429,13 @@ void MainFrame::OnConfirmFundTransferButtonClicked(wxCommandEvent& evt)
     catch (const invalid_argument& i) {
         wxMessageBox(i.what(), "Error", wxOK | wxICON_ERROR);
     }
-    catch (const out_of_range&) {
-        wxMessageBox("Amount out of range", "Error", wxOK | wxICON_ERROR);
+    catch (const out_of_range& r) {
+        wxMessageBox(r.what(), "Error", wxOK | wxICON_ERROR);
     }
     catch (const exception& e) {
         wxMessageBox(e.what(), "Error", wxOK | wxICON_ERROR);
     }
+    ShowFundTransferTransactionControls(false);
     ShowTransactionControls(true);
 }
 
@@ -448,7 +458,12 @@ void MainFrame::OnConfirmChangePincodeButonClicked(wxCommandEvent& evt)
     catch (const invalid_argument& i) {
         wxMessageBox(i.what(), "Error", wxOK | wxICON_ERROR);
     }
-    oldPincodeInputField->Clear();
-    newPincodeInputField->Clear();
+    catch (const out_of_range& r) {
+        wxMessageBox(r.what(), "Error", wxOK | wxICON_ERROR);
+    }
+    catch (const exception& e) {
+        wxMessageBox(e.what(), "Error", wxOK | wxICON_ERROR);
+    }
+    ShowChangePincodeTransactionControls(false);
     ShowTransactionControls(true);
 }
