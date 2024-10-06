@@ -12,6 +12,19 @@ bool Bank::isEmpty()
 	return (head == nullptr);
 }
 
+bool Bank::accountExists(const std::string& accountNumber) const
+{
+	// Loop through the bank's internal account list
+	Node* ptr = head;
+	while (ptr)
+	{
+		if (ptr->account.accountNumber == accountNumber)
+			return true;
+		ptr = ptr->next;
+	}
+	return false;
+}
+
 bool Bank::isCardRegistered()
 {
 	string filepath = string(1, driveLetter) + ":\\account.txt";
@@ -34,6 +47,7 @@ void Bank::retrieveAllAccounts()
 
 	Node* ptr = head;
 	string line;
+	int maxAccNum = 0; // To track the highest account number
 	while (getline(inputFile, line))
 	{
 		stringstream stream(line);
@@ -51,7 +65,13 @@ void Bank::retrieveAllAccounts()
 
 		Account account(accountNumber, name, pincode, birthday, contactNumber, balance);
 		add(account);
+
+		// Extract account number and find max
+		maxAccNum = max(maxAccNum, stoi(accountNumber));
 	}
+
+	// Update accNumberCounter for the next new account
+	accNumberCounter = maxAccNum + 1; // Increment to the next available number
 }
 
 void Bank::saveAllAccounts()

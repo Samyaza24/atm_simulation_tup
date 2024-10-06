@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <wx/string.h>
 
 using namespace std;
 
@@ -42,6 +43,10 @@ private:
 public:
 	Account& currentAccount;
 
+	bool accountExists(const std::string& accountNumber) const;
+
+	char getDriveLetter() const { return driveLetter; }
+
 	Bank(Account& admin) : head(nullptr), currentAccount(admin), accNumberCounter(0) {}
 
 	bool isCardRegistered();
@@ -50,5 +55,10 @@ public:
 	void saveAllAccounts();
 
 	void add(Account account);
+
+	string generateAccountNumber() {
+		// Generate the account number in 5-digit format with leading zeros
+		return wxString::Format("%05d", accNumberCounter++).ToStdString();
+	}
 };
 
