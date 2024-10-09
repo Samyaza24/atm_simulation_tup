@@ -23,7 +23,9 @@ private:
 	void OnFocus(wxFocusEvent& event);
 	void OnUnfocus(wxFocusEvent& event);
 
+	void SaveAccountToFlashDrive(const Account& newAccount, char driveLetter = 'D');
 	bool IsFlashDriveInserted(char driveLetter);
+	bool isLoggedIn; 
 	
 	void ShowInsertCardText(bool show);
 	void ShowEnterPincode(bool show);
@@ -37,6 +39,8 @@ private:
 
 
 	void OnBalanceInquiryButtonClicked(wxCommandEvent& evt);
+	void OnEnterPincodeButton(wxCommandEvent& evt);
+	void OnTransactionCompleted();
 	void OnConfirmBalanceInquiryButtonClicked(wxCommandEvent& evt);
 
 	void OnWithrawButtonClicked(wxCommandEvent& evt);
