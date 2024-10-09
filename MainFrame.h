@@ -17,6 +17,11 @@ private:
 
 	void OnTimer(wxTimerEvent& evt);
 	void OnFlashDriveInserted();
+	void OnRegisterButtonClicked(wxCommandEvent& evt);
+	void OnWindowClose(wxCloseEvent& event);
+
+	void OnFocus(wxFocusEvent& event);
+	void OnUnfocus(wxFocusEvent& event);
 
 	bool IsFlashDriveInserted(char driveLetter);
 	
