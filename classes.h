@@ -58,7 +58,7 @@ public:
 	void retrieveAllAccounts();
 	void saveAllAccounts();
 
-	bool accountExistsChecker(string name, string contactNum);
+	bool accountDuplicationChecker(string name, string contactNum);
 	bool accountExists(const string& hashedaccountNum) const;
 
 	void add(Account account);

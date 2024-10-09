@@ -13,7 +13,7 @@ bool Bank::isEmpty()
 	return (head == nullptr);
 }
 
-bool Bank::accountExistsChecker(string name, string contactNum)
+bool Bank::accountDuplicationChecker(string name, string contactNum)
 {
 	Node* ptr = head;
 	while (ptr)

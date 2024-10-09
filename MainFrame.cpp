@@ -245,7 +245,7 @@ void MainFrame::OnRegisterButtonClicked(wxCommandEvent& evt)
         contactNumber.ToStdString(), 
         initialBalance);
 
-    if (bank.accountExistsChecker(newAccount.name, newAccount.contactNumber))
+    if (bank.accountDuplicationChecker(newAccount.name, newAccount.contactNumber))
     {
         wxMessageBox("Account Exist! Registration Denied.",
             "Registration Error", wxOK | wxICON_ERROR);
