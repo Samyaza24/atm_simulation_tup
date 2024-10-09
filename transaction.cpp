@@ -44,6 +44,7 @@ bool Bank::fundTransfer(const string& receiverAccountNumber, double amount)
 		if (current->account.accountNumber == receiverAccountNumber) {
 			currentAccount.balance -= amount; 
 			current->account.balance += amount; 
+			saveAllAccounts();
 			return true; 
 		}
 		current = current->next;

@@ -235,12 +235,14 @@ void MainFrame::BindEventHandlers()
 
 void MainFrame::OnTimer(wxTimerEvent& evt)
 {
-    if (isLoggedIn) {
-        // If the user is logged in, skip checking flash drive and resetting controls
-        return;
-    }
+    //if (isLoggedIn) {
+    //    // If the user is logged in, skip checking flash drive and resetting controls
+    //    return;
+    //}
+    timer->Stop();
 
-    if (IsFlashDriveInserted('D'))
+    if (true)
+    //if (IsFlashDriveInserted('D'))
     {
         OnFlashDriveInserted();
     }
