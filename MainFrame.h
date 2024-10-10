@@ -10,6 +10,7 @@ public:
 private:
 	Account adminAccount;
 	Bank bank;
+	bool isLoggedIn;
 
 	void CreateControls();
 	void SetupSizers();
@@ -25,7 +26,7 @@ private:
 
 	void SaveAccountToFlashDrive(const Account& newAccount, char driveLetter = 'D');
 	bool IsFlashDriveInserted(char driveLetter);
-	bool isLoggedIn; 
+	
 	
 	void ShowInsertCardText(bool show);
 	void ShowEnterPincode(bool show);
@@ -54,6 +55,8 @@ private:
 	
 	void OnChangePincodeButtonClicked(wxCommandEvent& evt);
 	void OnConfirmChangePincodeButonClicked(wxCommandEvent& evt);
+
+	void askForAnotherTrans(wxCommandEvent& evt);
 
 	wxPanel* panel;
 	wxTimer* timer;

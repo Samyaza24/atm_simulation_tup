@@ -235,23 +235,20 @@ void MainFrame::BindEventHandlers()
 
 void MainFrame::OnTimer(wxTimerEvent& evt)
 {
-    //if (isLoggedIn) {
-    //    // If the user is logged in, skip checking flash drive and resetting controls
-    //    return;
-    //}
-    timer->Stop();
+   
+   
 
-    if (true)
-    //if (IsFlashDriveInserted('D'))
+    if (IsFlashDriveInserted('D'))
     {
+        timer->Stop();
         OnFlashDriveInserted();
     }
 
     else
     {
-        ShowInsertCardText(false);
+        ShowInsertCardText(true);
         ShowEnterPincode(false);
-        ShowRegistrationControls(true);
+        ShowRegistrationControls(false);
         ShowTransactionControls(false);
 
         panel->Layout();
@@ -260,7 +257,6 @@ void MainFrame::OnTimer(wxTimerEvent& evt)
 
 void MainFrame::OnFlashDriveInserted()
 {
-
     if (bank.isCardRegistered())
     {
         ShowEnterPincode(true);
@@ -270,12 +266,10 @@ void MainFrame::OnFlashDriveInserted()
     }
     else
     {
-        ShowRegistrationControls(false);
-        //ShowRegistrationControls(true);
+        ShowRegistrationControls(true);
         ShowInsertCardText(false);
         ShowEnterPincode(false);
-        //ShowTransactionControls(false);
-        ShowTransactionControls(true);
+        ShowTransactionControls(false);
 
     }
     panel->Layout();
@@ -329,7 +323,7 @@ void MainFrame::OnRegisterButtonClicked(wxCommandEvent& evt)
     string accountNumber = bank.generateAccountNumber(); // Increment and format
 
     // Initial balance for new accounts (0.0 for new registrations)
-    double initialBalance = 0.0;
+    double initialBalance = 5000.0;
     string lastDigit = bank.getSignificantDigits(accountNumber);
     string hashedPin = bank.hashPinCode(pincode.ToStdString(), lastDigit);
 
@@ -362,6 +356,11 @@ void MainFrame::OnRegisterButtonClicked(wxCommandEvent& evt)
     birthdayInputField->SetValue(birthdayPlaceholder);
     contactNumberInputField->SetValue(contactNumberPlaceholder);
     pinCodeInputField->SetValue(pinCodePlaceholder);
+
+    // Go to Pincode
+    ShowEnterPincode(true);
+    ShowRegistrationControls(false);
+
 }
 
 void MainFrame::OnWindowClose(wxCloseEvent& event)
@@ -582,8 +581,7 @@ void MainFrame::OnConfirmWithrawButtonClicked(wxCommandEvent& evt) {
     }
     WithrawInputField->Clear();
     ShowWithrawTransactionControls(false);
-    ShowTransactionControls(true);
-
+    askForAnotherTrans(evt);
 }
 
 void MainFrame::OnDepositButtonClicked(wxCommandEvent& evt)
@@ -615,6 +613,8 @@ void MainFrame::OnConfirmDepositButtonClicked(wxCommandEvent& evt)
     DepositInputField->Clear();
     ShowDepositTransactionControls(false);
     ShowTransactionControls(true);
+    askForAnotherTrans(evt);
+
 }
 
 void MainFrame::OnFundTransferButtonClicked(wxCommandEvent& evt)
@@ -651,6 +651,8 @@ void MainFrame::OnConfirmFundTransferButtonClicked(wxCommandEvent& evt)
     }
     ShowFundTransferTransactionControls(false);
     ShowTransactionControls(true);
+    askForAnotherTrans(evt);
+
 }
 
 void MainFrame::OnChangePincodeButtonClicked(wxCommandEvent& evt)
@@ -700,6 +702,7 @@ void MainFrame::OnEnterPincodeButton(wxCommandEvent& evt)
         wxMessageBox("PIN verified successfully!", "Success", wxOK | wxICON_INFORMATION);
 
         isLoggedIn = true;
+        bank.currentAccount = bank.searchAccount(accountNumber);
         // Proceed to show transaction options if PIN matched
         ShowTransactionControls(true);
         ShowEnterPincode(false);
@@ -728,8 +731,12 @@ void MainFrame::OnConfirmChangePincodeButonClicked(wxCommandEvent& evt)
     string oldPin = string(oldPincodeInputField->GetValue().mb_str());
     string newPin = string(newPincodeInputField->GetValue().mb_str());
 
+    string lastDigitOfAccNumber = bank.getSignificantDigits(bank.currentAccount.accountNumber);
+    string hashedOldPin = bank.hashPinCode(oldPin, lastDigitOfAccNumber);
+    string hashedNewPin = bank.hashPinCode(newPin, lastDigitOfAccNumber);
+    
     try {
-        bank.changePincode(oldPin, newPin);
+        bank.changePincode(hashedOldPin, hashedNewPin);
         wxMessageBox("Successfully Changed PIN", "Success", wxOK | wxICON_INFORMATION);
     }
     catch (const invalid_argument& i) {
@@ -743,4 +750,22 @@ void MainFrame::OnConfirmChangePincodeButonClicked(wxCommandEvent& evt)
     }
     ShowChangePincodeTransactionControls(false);
     ShowTransactionControls(true);
+    askForAnotherTrans(evt);
+}
+
+void MainFrame::askForAnotherTrans(wxCommandEvent& evt)
+{
+    int respond = wxMessageBox("Do you want to make another transaction?", "Another Transaction", wxYES_NO | wxICON_INFORMATION);
+
+    if (respond == wxYES) {
+        ShowTransactionControls(true);
+        ShowBalanceInquiryControls(false);
+        ShowWithrawTransactionControls(false);
+        ShowDepositTransactionControls(false);
+        ShowFundTransferTransactionControls(false);
+        ShowChangePincodeTransactionControls(false);
+    }
+    else {
+        Close(true);
+    }
 }

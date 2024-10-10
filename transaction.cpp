@@ -44,7 +44,6 @@ bool Bank::fundTransfer(const string& receiverAccountNumber, double amount)
 		if (current->account.accountNumber == receiverAccountNumber) {
 			currentAccount.balance -= amount; 
 			current->account.balance += amount; 
-			saveAllAccounts();
 			return true; 
 		}
 		current = current->next;
@@ -61,8 +60,8 @@ bool Bank::changePincode(const string& oldP, const string& newP)
 	if (currentAccount.pincode != oldP) {
 		throw invalid_argument("Incorrect Old PIN");
 	}
-	if (newP.length() != 6 || !isNumber(newP)) {
-		throw out_of_range("The PIN must be 6-Digits long and a number");
+	if (newP.length() != 8) {
+		throw out_of_range("The PIN must be 6-Digits long");
 	}
 	currentAccount.pincode = newP;
 	

@@ -40,7 +40,7 @@ private:
 	int accNumberCounter;
 
 	string filename = "allAccounts.csv";
-	char driveLetter = 'C';
+	char driveLetter = 'D';
 
 	bool isEmpty();
 
@@ -57,6 +57,8 @@ public:
 	
 	void retrieveAllAccounts();
 	void saveAllAccounts();
+	Account& searchAccount(string& accountNumber);
+	void updateAccount(Account& updatedAccount);
 
 	bool accountDuplicationChecker(string name, string contactNum);
 	bool accountExists(const string& hashedaccountNum) const;
